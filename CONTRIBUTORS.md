@@ -1,4 +1,4 @@
 # aad-team-6-animation-challenge
-#DairyApp
+# DairyApp
 Please use this file to write your names as contributors to this project
-#Etinge Mabian (Team Lead)
+# Etinge Mabian (Team Lead)
