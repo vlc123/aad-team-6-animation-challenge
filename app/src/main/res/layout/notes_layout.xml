@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="4dp"
+        app:cardBackgroundColor="@android:color/white">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp">
+            <com.andela.dairyapp.customs.CircularTextView
+                android:id="@+id/color_code"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:textAllCaps="true"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"/>
+            <LinearLayout
+                android:layout_toEndOf="@id/color_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="6dp">
+                <TextView
+                    android:id="@+id/note_title"
+                    android:text="Demo Name"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_width="match_parent"
+                    android:layout_margin="4dp"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/note_description"
+                    android:layout_margin="4dp"
+                    android:text="Demo description goes here"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"/>
+
+                <TextView
+                    android:id="@+id/created_at"
+                    android:text="Demo Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
