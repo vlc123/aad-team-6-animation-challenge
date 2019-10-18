@@ -1,3 +1,19 @@
 <resources>
   <string name="app_name">DairyApp</string>
+  <string name="title_activity_home">HomeActivity</string>
+  <string name="nothing_show_text">Dairy \n Nothing to show</string>
+  <string name="diary_name">Diary Name</string>
+  <string name="diary_description">Diary description</string>
+  <string name="cancel">Cancel</string>
+  <string name="save">Save</string>
+  <string name="new_diary">New Diary</string>
+  <string name="about">About</string>
+  <string name="sort">Sort</string>
+  <string name="by_date">By date</string>
+  <string name="by_order">By order A - Z</string>
+  <string name="by_order_z_a">By order Z-A</string>
+  <string name="edit">Edit</string>
+  <string name="delete">Delete</string>
+  <string name="share">Share</string>
+  <string name="quit">Quit</string>
 </resources>

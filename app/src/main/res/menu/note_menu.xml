@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_add"
+        android:title="@string/new_diary"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/action_sort"
+        android:title="@string/sort">
+        <menu>
+            <item android:id="@+id/sort_by_date"
+                android:title="@string/by_date"/>
+            <item android:id="@+id/sort_by_order"
+                android:title="@string/by_order"/>
+            <item android:id="@+id/sort_by_order_z_a"
+                android:title="@string/by_order_z_a"/>
+        </menu>
+    </item>
+
+    <item android:id="@+id/action_about"
+        android:title="@string/about"
+        app:showAsAction="never"/>
+</menu>
