@@ -1,6 +1,7 @@
 package com.andela.dairyapp.adapters;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.andela.dairyapp.R;
 import com.andela.dairyapp.activities.DetailsActivity;
 import com.andela.dairyapp.customs.CircularTextView;
+import com.andela.dairyapp.database.DairyDatabaseContract;
 import com.andela.dairyapp.models.Note;
 import com.google.gson.Gson;
 
@@ -19,6 +21,8 @@ import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Note> noteList;
+    private Cursor cursor;
+
 
     public NotesAdapter(List<Note> noteList) {
         this.noteList = noteList;
@@ -52,6 +56,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView note_title, note_description, created_time;
         CircularTextView color_code;
+
         ViewHolder(@NonNull final View itemView) {
             super(itemView);
             note_title = itemView.findViewById(R.id.note_title);
@@ -80,5 +85,41 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return false;
         }
 
+    }
+
+    public void changeCursor(Cursor curs) {
+        if (cursor != null) {
+            cursor.close();
+        }
+        cursor = curs;
+        populateNotes();
+        notifyDataSetChanged();
+
+    }
+
+    public void populateNotes() {
+        int idPos, colorPos, namePos, desPos, createPos;
+        if (cursor != null) {
+            idPos = cursor.getColumnIndex(DairyDatabaseContract.NoteEntry._ID);
+            namePos = cursor.getColumnIndex(DairyDatabaseContract.NoteEntry.COLUMN_NOTE_NAME);
+            colorPos = cursor.getColumnIndex(DairyDatabaseContract.NoteEntry.COLUMN_COLOR_CODE);
+            desPos = cursor.getColumnIndex(DairyDatabaseContract.NoteEntry.COLUMN_NOTE_DESCRIPTION);
+            createPos = cursor.getColumnIndex(DairyDatabaseContract.NoteEntry.COLUMN_CREATED_AT);
+
+            Note note;
+            int id, color;
+            String name, description, createAt;
+            while (cursor.moveToNext()) {
+                id = cursor.getInt(idPos);
+                name = cursor.getString(namePos);
+                description = cursor.getString(namePos);
+                color = cursor.getInt(colorPos);
+                createAt = cursor.getString(createPos);
+
+                note = new Note(id, color, name, description, createAt);
+                noteList.add(note);
+            }
+            cursor.close();
+        }
     }
 }

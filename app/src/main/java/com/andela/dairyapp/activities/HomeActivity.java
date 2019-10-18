@@ -2,11 +2,16 @@ package com.andela.dairyapp.activities;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import com.andela.dairyapp.DairyApplication;
 import com.andela.dairyapp.adapters.NotesAdapter;
+import com.andela.dairyapp.database.DairyDatabaseContract;
+import com.andela.dairyapp.database.repositories.NoteRepositoryImpl;
 import com.andela.dairyapp.models.Note;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -53,13 +58,6 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Note note = new Note();
-        note.set_id(new Random().nextInt(100));
-        note.setColor_code(generateColor());
-        note.setCreated_at(createAt());
-        note.setNote_name("Demo note");
-        note.setNote_description("Welcome to DiaryApp, you can check me out.");
-        noteList.add(note);
 
         notesAdapter = new NotesAdapter(noteList);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
@@ -67,6 +65,8 @@ public class HomeActivity extends AppCompatActivity {
         notesRecyclerView.setHasFixedSize(true);
         notesRecyclerView.setLayoutManager(linearLayoutManager);
         notesRecyclerView.setAdapter(notesAdapter);
+
+        loadNotes();
         emptyTV = findViewById(R.id.empty_dairy);
 
         fab = findViewById(R.id.fab_action_btn);
@@ -112,13 +112,17 @@ public class HomeActivity extends AppCompatActivity {
                         } else {
                             //TODO, save the information in a database or file :-)
                             Note note = new Note();
-                            note.set_id(new Random().nextInt(100));
                             note.setNote_name(event_name);
                             note.setNote_description(event_desc);
 
                             note.setColor_code(generateColor());
 
                             note.setCreated_at(createAt());
+
+                            NoteRepositoryImpl noteRepository =
+                                    ((DairyApplication) saveBtn.getContext().getApplicationContext()).getNoteRepository();
+                            long rowId = noteRepository.insert(note);
+                            note.set_id(Integer.parseInt(String.valueOf(rowId)));
                             boolean success = notesAdapter.addNote(note);
                             if (success) {
                                 dialog.dismiss();
@@ -137,7 +141,7 @@ public class HomeActivity extends AppCompatActivity {
     private String createAt() {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-         return dateFormat.format(date);
+        return dateFormat.format(date);
     }
 
     private int generateColor() {
@@ -233,4 +237,12 @@ public class HomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void loadNotes() {
+        NoteRepositoryImpl noteRepository =
+                ((DairyApplication) getApplicationContext()).getNoteRepository();
+        Cursor cursor = noteRepository.loadAll();
+        notesAdapter.changeCursor(cursor);
+    }
+
 }

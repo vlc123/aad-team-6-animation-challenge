@@ -7,6 +7,21 @@ public class Note {
     private String note_description;
     private String created_at;
 
+    public Note() {
+    }
+
+    public Note(int _id) {
+        this._id = _id;
+    }
+
+    public Note(int _id, int color_code, String note_name, String note_description, String created_at) {
+        this._id = _id;
+        this.color_code = color_code;
+        this.note_name = note_name;
+        this.note_description = note_description;
+        this.created_at = created_at;
+    }
+
     public int get_id() {
         return _id;
     }
