@@ -66,17 +66,22 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
         notesAdapter = new NotesAdapter(noteList);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         notesRecyclerView.setHasFixedSize(true);
         notesRecyclerView.setLayoutManager(linearLayoutManager);
+        SlideInLeftAnimator animator = new SlideInLeftAnimator();
+        animator.setInterpolator(new OvershootInterpolator());
+        animator.setAddDuration(1000);
+        notesRecyclerView.setItemAnimator(animator);
         ScaleInAnimationAdapter myAdapter = new ScaleInAnimationAdapter(notesAdapter);
         myAdapter.setDuration(400);
         myAdapter.setFirstOnly(false);
         myAdapter.setInterpolator(new OvershootInterpolator());
         notesRecyclerView.setAdapter(new AlphaInAnimationAdapter(myAdapter));
-
         loadNotes();
         emptyTV = findViewById(R.id.empty_dairy);
 
