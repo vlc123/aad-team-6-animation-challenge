@@ -1,11 +1,12 @@
 package com.andela.dairyapp.activities;
 
 import android.app.Dialog;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import com.andela.dairyapp.activities.auth.AuthActivity;
 import com.andela.dairyapp.adapters.NotesAdapter;
 import com.andela.dairyapp.models.Note;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,12 +25,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andela.dairyapp.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -46,6 +46,10 @@ public class HomeActivity extends AppCompatActivity {
     List<Note> noteList = new ArrayList<>();
     RecyclerView notesRecyclerView;
     TextView emptyTV;
+
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private String mUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +138,13 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+
+    private void logout(){
+        mFirebaseAuth.signOut();
+        Intent loginIntent = new Intent(this, AuthActivity.class);
+        startActivity(loginIntent);
+        finish();
+    }
     private String createAt() {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
@@ -228,6 +239,8 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.action_about:
                 Snackbar.make(notesRecyclerView, "About", Snackbar.LENGTH_LONG).show();
                 break;
+            case R.id.logout:
+                Snackbar.make(notesRecyclerView, "Signing Out", Snackbar.LENGTH_SHORT).show();
             default:
                 break;
         }
