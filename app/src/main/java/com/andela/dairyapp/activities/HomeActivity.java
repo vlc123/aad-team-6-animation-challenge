@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,6 +55,7 @@ public class HomeActivity extends AppCompatActivity {
     RecyclerView notesRecyclerView;
     TextView emptyTV;
     boolean doubleBackToExitPressedOnce = false;
+    boolean pendingIntroAnimation ;
 
 
     @Override
@@ -70,15 +72,11 @@ public class HomeActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         notesRecyclerView.setHasFixedSize(true);
         notesRecyclerView.setLayoutManager(linearLayoutManager);
-        SlideInLeftAnimator animator = new SlideInLeftAnimator();
-        animator.setInterpolator(new OvershootInterpolator());
-        animator.setAddDuration(1000);
-        notesRecyclerView.setItemAnimator(animator);
-        ScaleInAnimationAdapter myAdapter = new ScaleInAnimationAdapter(notesAdapter);
-        myAdapter.setDuration(400);
-        myAdapter.setFirstOnly(false);
-        myAdapter.setInterpolator(new OvershootInterpolator());
-        notesRecyclerView.setAdapter(new AlphaInAnimationAdapter(myAdapter));
+        if (savedInstanceState == null) {
+            pendingIntroAnimation = true;
+        }
+        notesRecyclerView.setAdapter(notesAdapter);
+
         loadNotes();
         emptyTV = findViewById(R.id.empty_dairy);
 
@@ -282,10 +280,27 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void loadNotes() {
+
+
         NoteRepositoryImpl noteRepository =
                 ((DairyApplication) getApplicationContext()).getNoteRepository();
         Cursor cursor = noteRepository.loadAll();
         notesAdapter.changeCursor(cursor);
+        if (pendingIntroAnimation) {
+            pendingIntroAnimation = false;
+            startIntroAnimation();
+        }
+    }
+
+    private void startIntroAnimation() {
+        notesRecyclerView.setTranslationY(1000);
+        notesRecyclerView.setAlpha(0f);
+        notesRecyclerView.animate()
+                .translationY(0)
+                .setDuration(400)
+                .alpha(1f)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .start();
     }
 
 }
