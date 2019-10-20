@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 .setInterpolator(new AccelerateDecelerateInterpolator());
 
         // This anim is used for moving the logo downwards
-        ObjectAnimator logoDownwardMovementAnimator = ObjectAnimator.ofFloat(mAppLogo, "translationY", 0f, 200f);
+        ObjectAnimator logoDownwardMovementAnimator = ObjectAnimator.ofFloat(mAppLogo, "translationY", 0f, 100f);
         logoDownwardMovementAnimator.setDuration(ANIM_DURATION)
                 .setInterpolator(new AccelerateDecelerateInterpolator());
 
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         ObjectAnimator textFadeInAnimator = ObjectAnimator.ofFloat(mWelcomeText, "alpha", 0.0f, 1.0f);
         textFadeInAnimator.setDuration(ANIM_DURATION);
 
-        ObjectAnimator textDownwardMovementAnimator = ObjectAnimator.ofFloat(mWelcomeText, "translationY", 0f, 200f);
+        ObjectAnimator textDownwardMovementAnimator = ObjectAnimator.ofFloat(mWelcomeText, "translationY", 0f, 100f);
         textDownwardMovementAnimator.setDuration(ANIM_DURATION);
 
         AnimatorSet set = new AnimatorSet();
