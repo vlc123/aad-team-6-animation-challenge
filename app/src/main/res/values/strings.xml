@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">DairyApp</string>
+  <string name="app_name">DiaryApp</string>
   <string name="title_activity_home">HomeActivity</string>
   <string name="nothing_show_text">Dairy \n Nothing to show</string>
   <string name="diary_name">Diary Name</string>
@@ -16,4 +16,5 @@
   <string name="delete">Delete</string>
   <string name="share">Share</string>
   <string name="quit">Quit</string>
+  <string name="welcome_message">Welcome to your diary!</string>
 </resources>
