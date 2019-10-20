@@ -1,5 +1,7 @@
 package com.andela.dairyapp.activities;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -59,6 +61,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher_round);
         setSupportActionBar(toolbar);
 
 
@@ -80,6 +83,11 @@ public class HomeActivity extends AppCompatActivity {
         emptyTV = findViewById(R.id.empty_dairy);
 
         fab = findViewById(R.id.fab_action_btn);
+
+        AnimatorSet alphaAnimation =(AnimatorSet) AnimatorInflater.loadAnimator(this,R.animator.fab_add_note_anim);
+        alphaAnimation.setTarget(fab);
+        alphaAnimation.start();
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
