@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
       public void run() {
         Intent toHomeActivity = new Intent(MainActivity.this, HomeActivity.class);
         startActivity(toHomeActivity);
+        finish();
       }
     }, 3500);
 

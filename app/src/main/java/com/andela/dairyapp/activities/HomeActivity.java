@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -28,6 +29,9 @@ import com.andela.dairyapp.activities.auth.AuthActivity;
 import com.andela.dairyapp.adapters.NotesAdapter;
 import com.andela.dairyapp.database.repositories.NoteRepositoryImpl;
 import com.andela.dairyapp.models.Note;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -154,12 +158,27 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void logout() {
-        mFirebaseAuth.signOut();
-        Intent loginIntent = new Intent(this, AuthActivity.class);
-        startActivity(loginIntent);
-        finish();
+        Toast.makeText(this, "Signing Out", Toast.LENGTH_LONG).show();
+        AuthUI.getInstance()
+                .signOut(this)
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    navigateToSignIn();
+                } else {
+                    Snackbar.make(notesRecyclerView, "Error happended during sign out! Try again", Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+
     }
 
+    private void navigateToSignIn(){
+        Intent authIntent = new Intent(HomeActivity.this, AuthActivity.class);
+        startActivity(authIntent);
+        finish();
+    }
     private String createAt() {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
@@ -255,7 +274,8 @@ public class HomeActivity extends AppCompatActivity {
                 Snackbar.make(notesRecyclerView, "About", Snackbar.LENGTH_LONG).show();
                 break;
             case R.id.logout:
-                Snackbar.make(notesRecyclerView, "Signing Out", Snackbar.LENGTH_SHORT).show();
+                logout();
+                return true;
             default:
                 break;
         }
