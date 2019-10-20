@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -45,12 +46,18 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.SlideInRightAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+
 public class HomeActivity extends AppCompatActivity {
     FloatingActionButton fab;
     NotesAdapter notesAdapter;
     List<Note> noteList = new ArrayList<>();
     RecyclerView notesRecyclerView;
     TextView emptyTV;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +66,22 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
         notesAdapter = new NotesAdapter(noteList);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         notesRecyclerView.setHasFixedSize(true);
         notesRecyclerView.setLayoutManager(linearLayoutManager);
-        notesRecyclerView.setAdapter(notesAdapter);
-
+        SlideInLeftAnimator animator = new SlideInLeftAnimator();
+        animator.setInterpolator(new OvershootInterpolator());
+        animator.setAddDuration(1000);
+        notesRecyclerView.setItemAnimator(animator);
+        ScaleInAnimationAdapter myAdapter = new ScaleInAnimationAdapter(notesAdapter);
+        myAdapter.setDuration(400);
+        myAdapter.setFirstOnly(false);
+        myAdapter.setInterpolator(new OvershootInterpolator());
+        notesRecyclerView.setAdapter(new AlphaInAnimationAdapter(myAdapter));
         loadNotes();
         emptyTV = findViewById(R.id.empty_dairy);
 
