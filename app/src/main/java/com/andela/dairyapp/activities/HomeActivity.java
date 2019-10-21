@@ -1,20 +1,24 @@
 package com.andela.dairyapp.activities;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.app.Dialog;
-import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import com.andela.dairyapp.DairyApplication;
-import com.andela.dairyapp.adapters.NotesAdapter;
-import com.andela.dairyapp.database.DairyDatabaseContract;
-import com.andela.dairyapp.database.repositories.NoteRepositoryImpl;
-import com.andela.dairyapp.models.Note;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.os.Handler;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,19 +26,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import com.andela.dairyapp.DairyApplication;
 import com.andela.dairyapp.R;
+import com.andela.dairyapp.adapters.NotesAdapter;
+import com.andela.dairyapp.database.repositories.NoteRepositoryImpl;
+import com.andela.dairyapp.models.Note;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,25 +49,38 @@ public class HomeActivity extends AppCompatActivity {
     List<Note> noteList = new ArrayList<>();
     RecyclerView notesRecyclerView;
     TextView emptyTV;
+    boolean doubleBackToExitPressedOnce = false;
+    boolean pendingIntroAnimation ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher_round);
         setSupportActionBar(toolbar);
+
 
         notesAdapter = new NotesAdapter(noteList);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         notesRecyclerView.setHasFixedSize(true);
         notesRecyclerView.setLayoutManager(linearLayoutManager);
+        if (savedInstanceState == null) {
+            pendingIntroAnimation = true;
+        }
         notesRecyclerView.setAdapter(notesAdapter);
 
         loadNotes();
         emptyTV = findViewById(R.id.empty_dairy);
 
         fab = findViewById(R.id.fab_action_btn);
+
+        AnimatorSet alphaAnimation =(AnimatorSet) AnimatorInflater.loadAnimator(this,R.animator.fab_add_note_anim);
+        alphaAnimation.setTarget(fab);
+        alphaAnimation.start();
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -238,11 +249,53 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
+            startActivity(intent);
+            finish();
+            System.exit(0);
+            return;
+        }
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+    }
+
+
     private void loadNotes() {
+
+
         NoteRepositoryImpl noteRepository =
                 ((DairyApplication) getApplicationContext()).getNoteRepository();
         Cursor cursor = noteRepository.loadAll();
         notesAdapter.changeCursor(cursor);
+        if (pendingIntroAnimation) {
+            pendingIntroAnimation = false;
+            startIntroAnimation();
+        }
+    }
+
+    private void startIntroAnimation() {
+        notesRecyclerView.setTranslationY(1000);
+        notesRecyclerView.setAlpha(0f);
+        notesRecyclerView.animate()
+                .translationY(0)
+                .setDuration(400)
+                .alpha(1f)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .start();
     }
 
 }
