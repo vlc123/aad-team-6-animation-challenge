@@ -62,10 +62,8 @@ public class AuthActivity extends AppCompatActivity {
                       } else {
                           navigateHome(null);
                       }
-
             }
         };
-
     }
 
 
