@@ -79,7 +79,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public boolean addNote(Note note) {
         if (noteList.add(note)) {
-            notifyDataSetChanged();
+            notifyItemChanged(note.get_id());
             return true;
         } else {
             return false;
@@ -93,7 +93,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
         cursor = curs;
         populateNotes();
-        notifyDataSetChanged();
+        notifyItemChanged(cursor.getPosition());
 
     }
 
@@ -112,7 +112,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             while (cursor.moveToNext()) {
                 id = cursor.getInt(idPos);
                 name = cursor.getString(namePos);
-                description = cursor.getString(namePos);
+                description = cursor.getString(desPos);
                 color = cursor.getInt(colorPos);
                 createAt = cursor.getString(createPos);
 
