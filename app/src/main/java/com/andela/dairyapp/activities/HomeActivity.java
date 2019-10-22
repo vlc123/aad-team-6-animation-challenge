@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -29,11 +30,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.andela.dairyapp.DairyApplication;
 import com.andela.dairyapp.R;
+import com.andela.dairyapp.activities.auth.AuthActivity;
 import com.andela.dairyapp.adapters.NotesAdapter;
 import com.andela.dairyapp.database.repositories.NoteRepositoryImpl;
 import com.andela.dairyapp.models.Note;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -54,14 +61,29 @@ public class HomeActivity extends AppCompatActivity {
     boolean pendingIntroAnimation ;
 
 
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private String mUsername;
+    private FirebaseUser mUserFirebase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher_round);
+        toolbar.setNavigationIcon(R.mipmap.ic_round_logo);
         setSupportActionBar(toolbar);
 
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mUserFirebase = mFirebaseAuth.getCurrentUser();
+
+        /*if (mUserFirebase == null) {
+            startActivity(new Intent(this, AuthActivity.class));
+            finish();
+        } else {
+            mUsername = mUserFirebase.getDisplayName();
+        }*/
 
         notesAdapter = new NotesAdapter(noteList);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
@@ -164,6 +186,29 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+
+    private void logout() {
+        Toast.makeText(this, "Signing Out", Toast.LENGTH_LONG).show();
+        AuthUI.getInstance()
+                .signOut(this)
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    navigateToSignIn();
+                } else {
+                    Snackbar.make(notesRecyclerView, "Error happended during sign out! Try again", Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+
+    }
+
+    private void navigateToSignIn(){
+        Intent authIntent = new Intent(HomeActivity.this, AuthActivity.class);
+        startActivity(authIntent);
+        finish();
+    }
     private String createAt() {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
@@ -270,6 +315,9 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.action_about:
                 Snackbar.make(notesRecyclerView, "About", Snackbar.LENGTH_LONG).show();
                 break;
+            case R.id.logout:
+                logout();
+                return true;
             default:
                 break;
         }
