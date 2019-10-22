@@ -14,8 +14,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.andela.dairyapp.R;
+import com.andela.dairyapp.activities.auth.AuthActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     private ImageView mAppLogo;
     private TextView mWelcomeText;
@@ -27,13 +28,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        // Set the content to appear under the system bars so that the
+                        // content doesn't resize when the system bars hide and show.
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        // Hide the nav bar and status bar
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
+
+        setContentView(R.layout.activity_splash);
 
         mAppLogo = findViewById(R.id.app_logo);
         mWelcomeText = findViewById(R.id.intro_message);
         mLayout = findViewById(R.id.base_layout);
         loadingProgressAnim = findViewById(R.id.progressBar);
-
 
         mAppLogo.setVisibility(View.GONE);
         mWelcomeText.setVisibility(View.GONE);
@@ -43,8 +55,9 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent toHomeActivity = new Intent(MainActivity.this, HomeActivity.class);
+                Intent toHomeActivity = new Intent(SplashActivity.this, AuthActivity.class);
                 startActivity(toHomeActivity);
+                finish();
             }
         }, 3500);
 
